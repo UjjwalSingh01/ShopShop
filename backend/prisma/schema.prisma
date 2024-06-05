@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+model User {
+  id          String    @id @default(uuid())
+  firstname   String
+  lastname    String
+  email       String    @unique
+  password    String
+  // Define a reverse relation to the Orders model
+  orders      Orders[]   @relation("userOrders") 
+  cart        Cart[]     @relation("userCart")
+}
+
+model Orders {
+  id           String   @id @default(uuid())
+  user         User     @relation("userOrders", fields: [userId], references: [id])
+  userId       String
+  item_id      String
+  title        String
+  date         String
+  price        Int
+}
+
+model Cart {
+  id           String   @id @default(uuid())
+  user         User     @relation("userCart", fields: [userId], references: [id])
+  userId       String
+  item_id      String
+  title        String
+  quantity     Int
+  price        Int
+}
+
+model Product {
+  id                 String    @id @default(uuid())
+  title              String
+  description        String
+  quantity           Int
+  price              Int
+  discount_price     Int
+  category           String
+  // size
+  // star
+}
